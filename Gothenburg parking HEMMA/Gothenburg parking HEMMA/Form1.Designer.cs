@@ -32,7 +32,17 @@
             this.tabController = new System.Windows.Forms.TabControl();
             this.tabUI = new System.Windows.Forms.TabPage();
             this.groupPark = new System.Windows.Forms.GroupBox();
+            this.groupListing = new System.Windows.Forms.GroupBox();
+            this.tabControlListing = new System.Windows.Forms.TabControl();
+            this.tabCar = new System.Windows.Forms.TabPage();
+            this.lbCar = new System.Windows.Forms.ListBox();
+            this.tabMC = new System.Windows.Forms.TabPage();
+            this.lbMC = new System.Windows.Forms.ListBox();
+            this.lblPickView = new System.Windows.Forms.Label();
             this.groupDepart = new System.Windows.Forms.GroupBox();
+            this.lblPickDepart = new System.Windows.Forms.Label();
+            this.btnDepart = new System.Windows.Forms.Button();
+            this.comboBoxDepart = new System.Windows.Forms.ComboBox();
             this.groupMove = new System.Windows.Forms.GroupBox();
             this.btnMove = new System.Windows.Forms.Button();
             this.lblSpot = new System.Windows.Forms.Label();
@@ -51,15 +61,6 @@
             this.tabWorker = new System.Windows.Forms.TabPage();
             this.groupInstruct = new System.Windows.Forms.GroupBox();
             this.tbxInstructions = new System.Windows.Forms.TextBox();
-            this.btnDepart = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.lblPickDepart = new System.Windows.Forms.Label();
-            this.groupListing = new System.Windows.Forms.GroupBox();
-            this.lblPickView = new System.Windows.Forms.Label();
-            this.tabControlListing = new System.Windows.Forms.TabControl();
-            this.tabCar = new System.Windows.Forms.TabPage();
-            this.tabMC = new System.Windows.Forms.TabPage();
-            this.lbCar = new System.Windows.Forms.ListBox();
             this.spot30 = new Gothenburg_parking_HEMMA.DoubleClickButton();
             this.spot29 = new Gothenburg_parking_HEMMA.DoubleClickButton();
             this.spot28 = new Gothenburg_parking_HEMMA.DoubleClickButton();
@@ -90,20 +91,20 @@
             this.spot3 = new Gothenburg_parking_HEMMA.DoubleClickButton();
             this.spot2 = new Gothenburg_parking_HEMMA.DoubleClickButton();
             this.spot1 = new Gothenburg_parking_HEMMA.DoubleClickButton();
-            this.lbMC = new System.Windows.Forms.ListBox();
+            this.lblDepartRes = new System.Windows.Forms.Label();
             this.tabController.SuspendLayout();
             this.tabUI.SuspendLayout();
             this.groupPark.SuspendLayout();
+            this.groupListing.SuspendLayout();
+            this.tabControlListing.SuspendLayout();
+            this.tabCar.SuspendLayout();
+            this.tabMC.SuspendLayout();
             this.groupDepart.SuspendLayout();
             this.groupMove.SuspendLayout();
             this.groupBoxParker.SuspendLayout();
             this.parkmap.SuspendLayout();
             this.tabWorker.SuspendLayout();
             this.groupInstruct.SuspendLayout();
-            this.groupListing.SuspendLayout();
-            this.tabControlListing.SuspendLayout();
-            this.tabCar.SuspendLayout();
-            this.tabMC.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabController
@@ -141,17 +142,116 @@
             this.groupPark.TabStop = false;
             this.groupPark.Text = "ParkMaster (TM pending)";
             // 
+            // groupListing
+            // 
+            this.groupListing.Controls.Add(this.tabControlListing);
+            this.groupListing.Controls.Add(this.lblPickView);
+            this.groupListing.Location = new System.Drawing.Point(768, 19);
+            this.groupListing.Name = "groupListing";
+            this.groupListing.Size = new System.Drawing.Size(188, 204);
+            this.groupListing.TabIndex = 12;
+            this.groupListing.TabStop = false;
+            this.groupListing.Text = "Listing";
+            // 
+            // tabControlListing
+            // 
+            this.tabControlListing.Controls.Add(this.tabCar);
+            this.tabControlListing.Controls.Add(this.tabMC);
+            this.tabControlListing.Location = new System.Drawing.Point(6, 44);
+            this.tabControlListing.Name = "tabControlListing";
+            this.tabControlListing.SelectedIndex = 0;
+            this.tabControlListing.Size = new System.Drawing.Size(176, 154);
+            this.tabControlListing.TabIndex = 11;
+            // 
+            // tabCar
+            // 
+            this.tabCar.Controls.Add(this.lbCar);
+            this.tabCar.Location = new System.Drawing.Point(4, 22);
+            this.tabCar.Name = "tabCar";
+            this.tabCar.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCar.Size = new System.Drawing.Size(168, 128);
+            this.tabCar.TabIndex = 0;
+            this.tabCar.Text = "Car(s)";
+            this.tabCar.UseVisualStyleBackColor = true;
+            // 
+            // lbCar
+            // 
+            this.lbCar.FormattingEnabled = true;
+            this.lbCar.Location = new System.Drawing.Point(2, 6);
+            this.lbCar.Name = "lbCar";
+            this.lbCar.Size = new System.Drawing.Size(163, 121);
+            this.lbCar.TabIndex = 12;
+            // 
+            // tabMC
+            // 
+            this.tabMC.Controls.Add(this.lbMC);
+            this.tabMC.Location = new System.Drawing.Point(4, 22);
+            this.tabMC.Name = "tabMC";
+            this.tabMC.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMC.Size = new System.Drawing.Size(168, 128);
+            this.tabMC.TabIndex = 1;
+            this.tabMC.Text = "MC(s)";
+            this.tabMC.UseVisualStyleBackColor = true;
+            // 
+            // lbMC
+            // 
+            this.lbMC.FormattingEnabled = true;
+            this.lbMC.Location = new System.Drawing.Point(2, 6);
+            this.lbMC.Name = "lbMC";
+            this.lbMC.Size = new System.Drawing.Size(163, 121);
+            this.lbMC.TabIndex = 13;
+            // 
+            // lblPickView
+            // 
+            this.lblPickView.AutoSize = true;
+            this.lblPickView.Location = new System.Drawing.Point(9, 25);
+            this.lblPickView.Name = "lblPickView";
+            this.lblPickView.Size = new System.Drawing.Size(137, 13);
+            this.lblPickView.TabIndex = 10;
+            this.lblPickView.Text = "Pick type of vehicle to view";
+            this.lblPickView.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // groupDepart
             // 
+            this.groupDepart.Controls.Add(this.lblDepartRes);
             this.groupDepart.Controls.Add(this.lblPickDepart);
             this.groupDepart.Controls.Add(this.btnDepart);
-            this.groupDepart.Controls.Add(this.comboBox1);
+            this.groupDepart.Controls.Add(this.comboBoxDepart);
             this.groupDepart.Location = new System.Drawing.Point(574, 19);
             this.groupDepart.Name = "groupDepart";
             this.groupDepart.Size = new System.Drawing.Size(188, 204);
             this.groupDepart.TabIndex = 3;
             this.groupDepart.TabStop = false;
             this.groupDepart.Text = "Depart";
+            // 
+            // lblPickDepart
+            // 
+            this.lblPickDepart.AutoSize = true;
+            this.lblPickDepart.Location = new System.Drawing.Point(9, 40);
+            this.lblPickDepart.Name = "lblPickDepart";
+            this.lblPickDepart.Size = new System.Drawing.Size(164, 26);
+            this.lblPickDepart.TabIndex = 8;
+            this.lblPickDepart.Text = "Pick or Write \r\nyour registration number to depart";
+            this.lblPickDepart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnDepart
+            // 
+            this.btnDepart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDepart.Location = new System.Drawing.Point(32, 132);
+            this.btnDepart.Name = "btnDepart";
+            this.btnDepart.Size = new System.Drawing.Size(125, 23);
+            this.btnDepart.TabIndex = 11;
+            this.btnDepart.Text = "Depart";
+            this.btnDepart.UseVisualStyleBackColor = true;
+            this.btnDepart.Click += new System.EventHandler(this.btnDepart_Click);
+            // 
+            // comboBoxDepart
+            // 
+            this.comboBoxDepart.FormattingEnabled = true;
+            this.comboBoxDepart.Location = new System.Drawing.Point(32, 89);
+            this.comboBoxDepart.Name = "comboBoxDepart";
+            this.comboBoxDepart.Size = new System.Drawing.Size(125, 21);
+            this.comboBoxDepart.TabIndex = 10;
             // 
             // groupMove
             // 
@@ -373,95 +473,6 @@
             this.tbxInstructions.ReadOnly = true;
             this.tbxInstructions.Size = new System.Drawing.Size(957, 224);
             this.tbxInstructions.TabIndex = 0;
-            // 
-            // btnDepart
-            // 
-            this.btnDepart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDepart.Location = new System.Drawing.Point(32, 132);
-            this.btnDepart.Name = "btnDepart";
-            this.btnDepart.Size = new System.Drawing.Size(125, 23);
-            this.btnDepart.TabIndex = 11;
-            this.btnDepart.Text = "Depart";
-            this.btnDepart.UseVisualStyleBackColor = true;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(32, 89);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(125, 21);
-            this.comboBox1.TabIndex = 10;
-            // 
-            // lblPickDepart
-            // 
-            this.lblPickDepart.AutoSize = true;
-            this.lblPickDepart.Location = new System.Drawing.Point(9, 40);
-            this.lblPickDepart.Name = "lblPickDepart";
-            this.lblPickDepart.Size = new System.Drawing.Size(164, 26);
-            this.lblPickDepart.TabIndex = 8;
-            this.lblPickDepart.Text = "Pick or Write \r\nyour registration number to depart";
-            this.lblPickDepart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // groupListing
-            // 
-            this.groupListing.Controls.Add(this.tabControlListing);
-            this.groupListing.Controls.Add(this.lblPickView);
-            this.groupListing.Location = new System.Drawing.Point(768, 19);
-            this.groupListing.Name = "groupListing";
-            this.groupListing.Size = new System.Drawing.Size(188, 204);
-            this.groupListing.TabIndex = 12;
-            this.groupListing.TabStop = false;
-            this.groupListing.Text = "Listing";
-            // 
-            // lblPickView
-            // 
-            this.lblPickView.AutoSize = true;
-            this.lblPickView.Location = new System.Drawing.Point(9, 25);
-            this.lblPickView.Name = "lblPickView";
-            this.lblPickView.Size = new System.Drawing.Size(137, 13);
-            this.lblPickView.TabIndex = 10;
-            this.lblPickView.Text = "Pick type of vehicle to view";
-            this.lblPickView.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // tabControlListing
-            // 
-            this.tabControlListing.Controls.Add(this.tabCar);
-            this.tabControlListing.Controls.Add(this.tabMC);
-            this.tabControlListing.Location = new System.Drawing.Point(6, 44);
-            this.tabControlListing.Name = "tabControlListing";
-            this.tabControlListing.SelectedIndex = 0;
-            this.tabControlListing.Size = new System.Drawing.Size(176, 154);
-            this.tabControlListing.TabIndex = 11;
-            // 
-            // tabCar
-            // 
-            this.tabCar.Controls.Add(this.lbCar);
-            this.tabCar.Location = new System.Drawing.Point(4, 22);
-            this.tabCar.Name = "tabCar";
-            this.tabCar.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCar.Size = new System.Drawing.Size(168, 128);
-            this.tabCar.TabIndex = 0;
-            this.tabCar.Text = "Car(s)";
-            this.tabCar.UseVisualStyleBackColor = true;
-            // 
-            // tabMC
-            // 
-            this.tabMC.Controls.Add(this.lbMC);
-            this.tabMC.Location = new System.Drawing.Point(4, 22);
-            this.tabMC.Name = "tabMC";
-            this.tabMC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMC.Size = new System.Drawing.Size(168, 128);
-            this.tabMC.TabIndex = 1;
-            this.tabMC.Text = "MC(s)";
-            this.tabMC.UseVisualStyleBackColor = true;
-            // 
-            // lbCar
-            // 
-            this.lbCar.FormattingEnabled = true;
-            this.lbCar.Location = new System.Drawing.Point(2, 6);
-            this.lbCar.Name = "lbCar";
-            this.lbCar.Size = new System.Drawing.Size(163, 121);
-            this.lbCar.TabIndex = 12;
             // 
             // spot30
             // 
@@ -733,13 +744,14 @@
             this.spot1.UseVisualStyleBackColor = true;
             this.spot1.Click += new System.EventHandler(this.btnPressed);
             // 
-            // lbMC
+            // lblDepartRes
             // 
-            this.lbMC.FormattingEnabled = true;
-            this.lbMC.Location = new System.Drawing.Point(2, 6);
-            this.lbMC.Name = "lbMC";
-            this.lbMC.Size = new System.Drawing.Size(163, 121);
-            this.lbMC.TabIndex = 13;
+            this.lblDepartRes.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.lblDepartRes.Location = new System.Drawing.Point(0, 158);
+            this.lblDepartRes.Name = "lblDepartRes";
+            this.lblDepartRes.Size = new System.Drawing.Size(188, 46);
+            this.lblDepartRes.TabIndex = 10;
+            this.lblDepartRes.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
@@ -753,6 +765,11 @@
             this.tabController.ResumeLayout(false);
             this.tabUI.ResumeLayout(false);
             this.groupPark.ResumeLayout(false);
+            this.groupListing.ResumeLayout(false);
+            this.groupListing.PerformLayout();
+            this.tabControlListing.ResumeLayout(false);
+            this.tabCar.ResumeLayout(false);
+            this.tabMC.ResumeLayout(false);
             this.groupDepart.ResumeLayout(false);
             this.groupDepart.PerformLayout();
             this.groupMove.ResumeLayout(false);
@@ -763,11 +780,6 @@
             this.tabWorker.ResumeLayout(false);
             this.groupInstruct.ResumeLayout(false);
             this.groupInstruct.PerformLayout();
-            this.groupListing.ResumeLayout(false);
-            this.groupListing.PerformLayout();
-            this.tabControlListing.ResumeLayout(false);
-            this.tabCar.ResumeLayout(false);
-            this.tabMC.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -828,7 +840,7 @@
         private DoubleClickButton spot1;
         private System.Windows.Forms.Label lblPickDepart;
         private System.Windows.Forms.Button btnDepart;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBoxDepart;
         private System.Windows.Forms.GroupBox groupListing;
         private System.Windows.Forms.TabControl tabControlListing;
         private System.Windows.Forms.TabPage tabCar;
@@ -836,6 +848,7 @@
         private System.Windows.Forms.Label lblPickView;
         private System.Windows.Forms.ListBox lbCar;
         private System.Windows.Forms.ListBox lbMC;
+        private System.Windows.Forms.Label lblDepartRes;
     }
 }
 
