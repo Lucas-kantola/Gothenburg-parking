@@ -7,7 +7,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -42,6 +44,7 @@ namespace Gothenburg_parking_HEMMA
         {
             InitializeComponent();
             //InitTimer();
+            comboBoxSearch.DataSource = platesList;
             comboboxMove.DataSource = platesList;
             comboBoxDepart.DataSource = platesList;
             lbCar.DataSource = CARs;
@@ -74,25 +77,25 @@ namespace Gothenburg_parking_HEMMA
 
         private void Item_DoubleClick(object sender, EventArgs e)
         {
-            displayContent();
+            displayContent(null);
         }
 
         // --------------------------------------------------------------------------------
         // --------------------------------- timer setup ----------------------------------
         // --------------------------------------------------------------------------------
 
-/*        private Timer timer1 = new Timer();
-        public void InitTimer()
-        {
-            timer1.Interval = 100;
-            timer1.Tick += new EventHandler(Timer1_Tick);
-            timer1.Start();
-        }
+        //private Timer timer1 = new Timer();
+        //public void InitTimer()
+        //{
+        //    timer1.Interval = 1000;
+        //    timer1.Tick += new EventHandler(Timer1_Tick);
+        //    timer1.Start();
+        //}
 
-        private void Timer1_Tick(object sender, EventArgs e)
-        {
-            UPDATE();
-        }*/
+        //private void Timer1_Tick(object sender, EventArgs e)
+        //{
+        //    UPDATE();
+        //}
 
         // --------------------------------------------------------------------------------
         // --------------------------------- remove text ----------------------------------
@@ -135,9 +138,6 @@ namespace Gothenburg_parking_HEMMA
 
         private void updateList()
         {
-            platesList.Clear();
-            MCs.Clear();
-            CARs.Clear();
             for (int i = 0; i < parkingData.Length; i++)
             {
                 if (parkingData[i] != null)
@@ -151,15 +151,19 @@ namespace Gothenburg_parking_HEMMA
                             platesList.Add(trimmed);
                         }
                     }
+
                     //update vehicle lists
                     if (parkingData[i].Substring(11, 3) == "MC?")
                     {
                         MCs.Add(Regex.Replace(collection[0].ToString(), @"\?", ""));
                     }
-                    else if (parkingData[i].Length > 35 && parkingData[i].Substring(46, 3) == "MC?"){
+
+                    if (parkingData[i].Length > 35 && parkingData[i].Substring(46, 3) == "MC?")
+                    {
                         MCs.Add(Regex.Replace(collection[1].ToString(), @"\?", ""));
                     }
-                    else if (parkingData[i].Substring(11, 3) == "CAR")
+                    
+                    if (parkingData[i].Substring(11, 3) == "CAR")
                     {
                         CARs.Add(Regex.Replace(collection[0].ToString(), @"\?", ""));
                     }
@@ -220,47 +224,164 @@ namespace Gothenburg_parking_HEMMA
             }
             else if (caller == "depart")
             {
-                tbxInstructions.Text += string.Format("Please remove {0} from spot {1}", REG, from);
+                tbxInstructions.Text += string.Format("Please remove {0} from spot {1} \r\n", REG, from);
+            }
+            else if (caller == "optimize")
+            {
+                tbxInstructions.Text += string.Format("Please move {0} from spot {1} to optimize parkinglot \r\n", REG, from);
             }
         }
 
-        private void displayContent()
+        private void giveReciept(string index)
         {
-            string data = parkingData[int.Parse(Regex.Replace(lastPressed.Name, @"spot", "")) - 1];
 
-            if (lastPressed.Text != "" && data != null)
+            string[] indexparts = index.Split(':');
+            string data = parkingData[int.Parse(indexparts[0])];
+
+            MatchCollection matches = extractPlate.Matches(data);
+
+            if (indexparts[1] == "1")
             {
-                if (data.Length > 35)
+                string reg = Regex.Replace(matches[0].ToString(), @"\?", "");
+                DateTime parkedSince = Convert.ToDateTime(data.Substring(15, 19));
+                TimeSpan difference = DateTime.Now - parkedSince;
+
+                tbxRec.Text += string.Format("{0} has been checked out from the parkinglot. Parked since: {1}. Time spent parked: {2} \r\n", 
+                    reg, parkedSince, difference);
+            }
+            else if (indexparts[1] == "2")
+            {
+                string reg = Regex.Replace(matches[1].ToString(), @"\?", "");
+                DateTime parkedSince = Convert.ToDateTime(data.Substring(50, 19));
+                TimeSpan difference = DateTime.Now - parkedSince;
+
+                tbxRec.Text += string.Format("{0} has been checked out from the parkinglot. Parked since: {1}. Time spent parked: {2} \r\n", 
+                    reg, parkedSince, difference);
+            }
+        }
+
+
+        private void displayContent(string REG)
+        {
+            if (REG == null)
+            {
+                string data = parkingData[int.Parse(Regex.Replace(lastPressed.Name, @"spot", "")) - 1];
+
+                if (lastPressed.Text != "" && data != null)
                 {
-                    MatchCollection plate = extractPlate.Matches(data);
-                    string message = string.Format(
-                        "The space contains: \r\n" +
-                        "     {0} \r\n" +
-                        "     {1}", plate[0].ToString().Replace('?', ' '), plate[1]).Replace('?', ' ');
-                    MessageBox.Show(message, "The spot contains:");
+                    if (data.Length > 35)
+                    {
+                        MatchCollection plate = extractPlate.Matches(data);
+                        string message = string.Format(
+                            "The space contains: \r\n" +
+                            "     {0} \r\n" +
+                            "     {1}", plate[0].ToString().Replace('?', ' '), plate[1]).Replace('?', ' ');
+                        MessageBox.Show(message, "The spot contains:");
+                    }
+                    else
+                    {
+                        string plate = extractPlate.Match(data).ToString().Replace('?', ' ');
+                        string message = string.Format(
+                            "The space contains: \r\n" +
+                            "     {0}", plate);
+                        MessageBox.Show(message, "The spot contains:");
+                    }
                 }
-                else
+            }
+            else
+            {
+                string index = findIndexOfVehicle(REG);
+                string[] indexParts = index.Split(':');
+                string time = "0000-00-00 00:00:00";
+
+                REG = Regex.Replace(REG, @"\?", "");
+
+                if (indexParts[1] == "1")
                 {
-                    string plate = extractPlate.Match(data).ToString().Replace('?', ' ');
-                    string message = string.Format(
-                        "The space contains: \r\n" +
-                        "     {0}", plate);
-                    MessageBox.Show(message, "The spot contains:");
+                    time = parkingData[int.Parse(indexParts[0])].Substring(15, 19);
+                }
+                else if (indexParts[1] == "2")
+                {
+                    time = parkingData[int.Parse(indexParts[0])].Substring(50, 19);
                 }
 
+                string message = string.Format(
+                    "{0} is located at spot {1} and has been parked since {2}", REG, int.Parse(indexParts[0]) + 1, time);
+
+                MessageBox.Show(message, "Details of Vehicle");
             }
 
         }
 
         private void UPDATE()
         {
+            clearLists();
             updateList();
             updateVisual();
+        }
+
+        private void clearLists()
+        {
+            platesList.Clear();
+            MCs.Clear();
+            CARs.Clear();
+        }
+
+
+        // --------------------------------------------------------------------------------
+        // --------------------------------- Optimisera -----------------------------------
+        // --------------------------------------------------------------------------------
+
+        private void optimize()
+        {
+            List<int> indexes = new List<int>();
+
+            for (int i = 0; i < parkingData.Length; i++)
+            {
+                if (parkingData[i] != null)
+                {
+                    if (getType(parkingData[i], true) == "MC?" && parkingData.Length < 36)
+                    {
+                        indexes.Add(i);
+                    }
+                }
+            }
+
+            for(int j = 0; j < indexes.Count; j += 2)
+            {
+                if (j + 1 <= indexes.Count - 1)
+                {
+                    parkingData[indexes[j]] += parkingData[indexes[j + 1]];
+                    string reg = extractPlate.Match(parkingData[indexes[j + 1]]).ToString();
+                    updateInstructions(indexes[j+1], indexes[j], reg);
+                    Array.Clear(parkingData, indexes[j+1], 1);
+                }
+            }
+            UPDATE();
+
         }
 
         // --------------------------------------------------------------------------------
         // --------------------------------- BASIC CHECKS ---------------------------------
         // --------------------------------------------------------------------------------
+
+        private bool validatePlate(string REG)
+        {
+            if (REG.Count() == 0 || REG.Count() > 10)
+            {
+                return false;
+            }
+
+            char[] validChar = "-0123456789ABCDEFGHIJLMNOPQRSTUVWXYZÅÄÖÜËÑÆŒØß".ToCharArray();
+            foreach (char c in REG)
+            {
+                if (!validChar.Contains(c))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         private string getPlate(string data, bool first)
         {
@@ -346,7 +467,7 @@ namespace Gothenburg_parking_HEMMA
                 }
                 throw new Exception("VEHICLE HAS NO INDEX");
             }
-            throw new Exception("VEHICLE IS NOT IN ARRAY");
+            throw new Exception("ERROR_404:VEHICLE IS NOT IN ARRAY");
         }
 
         private void placeVehicle(int position, string licens, bool isCar)
@@ -354,6 +475,15 @@ namespace Gothenburg_parking_HEMMA
             string type = isCar ? "CAR" : "MC?";
 
             parkingData[position] += string.Format("{0}:{1}@{2}&", licens, type, DateTime.Now);
+        }
+
+        private void searchVechile(string plate)
+        {
+            UPDATE();
+            string indexPos = findIndexOfVehicle(plate);
+            string[] indexList = indexPos.Split(':');
+            int index = int.Parse(indexList[0]);
+            buttons[index].BackColor = Color.Blue;
         }
 
         private int Park(string licens, bool isCar)
@@ -536,32 +666,31 @@ namespace Gothenburg_parking_HEMMA
 
             if (parkingData[position].Length <= 35)
             {
+                giveReciept(index);
                 Array.Clear(parkingData, position, 1);
                 lblDepartRes.Text = "Vehicle has been depared";
-                Update();
-                updateInstructions(position, null, REG);
+                UPDATE();
             }
             else if (parkingData[position].Length > 35 && partIndex == 1)
             {
+                giveReciept(index);
                 string temp = parkingData[position].Substring(35, 35);
                 Array.Clear(parkingData, position, 1);
                 parkingData[position] = temp;
-                Update();
-                updateInstructions(position, null, REG);
+                UPDATE();
             }
             else if (parkingData[position].Length > 35 && partIndex == 2)
             {
+                giveReciept(index);
                 string temp = parkingData[position].Substring(0, 35);
                 Array.Clear(parkingData, position, 1);
                 parkingData[position] = temp;
-                Update();
-                updateInstructions(position, null, REG);
+                UPDATE();
             }
             else
             {
                 throw new Exception("Vehicle could not be depared");
             }
-
         }
 
         private void btnMove_Click(object sender, EventArgs e)
@@ -579,9 +708,11 @@ namespace Gothenburg_parking_HEMMA
             string regnr = textboxREG.Text;
             bool isCar = radioCAR.Checked;
 
-            if (regnr.Contains("?"))
+            regnr = regnr.Trim();
+
+            if(!validatePlate(regnr))
             {
-                labelVehicleParked.Text = "Please insert valid reg";
+                lblVehicleParked.Text = "Please insert a valid registration";
                 return;
             }
 
@@ -594,19 +725,20 @@ namespace Gothenburg_parking_HEMMA
                 switch (Park(regnr, isCar))
                 {
                     case 0:
-                        labelVehicleParked.Text = Regex.Replace(regnr, @"\?", "") + " Has failed to park";
+                        lblVehicleParked.Text = Regex.Replace(regnr, @"\?", "") + " Has failed to park";
                         break;
-
+                                                            
                     case 1:
-                        labelVehicleParked.Text = Regex.Replace(regnr, @"\?", "") + " Has been parked at " + prevPos;
+                        lblVehicleParked.Text = Regex.Replace(regnr, @"\?", "") + " Has been parked at " + prevPos;
                         break;
 
                     case 2:
-                        labelVehicleParked.Text = Regex.Replace(regnr, @"\?", "") + " Is already parked";
+                        lblVehicleParked.Text = Regex.Replace(regnr, @"\?", "") + " Is already parked";
                         break;
                 }
             }
             UPDATE();
+            textboxREG.Text = string.Empty;
         }
 
         private void btnDepart_Click(object sender, EventArgs e)
@@ -615,8 +747,45 @@ namespace Gothenburg_parking_HEMMA
             {
                 string REG = comboBoxDepart.Text;
                 fillREG(ref REG);
-                depart(REG);
+                if (isAlreadyParked(REG))
+                {
+                    depart(REG);
+                }
             }
+        }
+
+        private void tabWorker_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            if (comboBoxSearch.Text != "")
+            {
+                string reg = comboBoxSearch.Text;
+                fillREG(ref reg);
+                searchVechile(reg);
+            }
+        }
+
+        private void lbCar_DoubleClick(object sender, EventArgs e)
+        {
+            string selected = lbCar.SelectedItems[0].ToString();
+            fillREG(ref selected);
+            displayContent(selected);
+        }
+
+        private void lbMC_DoubleClick(object sender, EventArgs e)
+        {
+            string selected = lbMC.SelectedItems[0].ToString();
+            fillREG(ref selected);
+            displayContent(selected);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            optimize();
         }
     }
 }
