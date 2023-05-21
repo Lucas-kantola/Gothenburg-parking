@@ -24,17 +24,17 @@ namespace Gothenburg_parking_HEMMA
 
         /*
          * The datastructure that is stored in the array parkingData is 35 char long and does not contain ? characters. 
-         * Where the first 10 char is the REG number followed by ":" and then type stored with 3 char: "MC?" or "CAR
+         * Where the first 10 char is the reg number followed by ":" and then type stored with 3 char: "MC?" or "CAR
          * after which there is a "@" to separate and then the Datetime.Now data with a serperator "&" at the end
          * XXXXXX:TYP@YEAR-Mo-Da ho:mi:se&
-         *  REG   type       Datetime
+         *  reg   type       Datetime
          */
 
 
         string[] parkingData = new string[30];
         Regex extractPlate = new Regex(@"(?<=&|^).*?(?=:)");
         bool firstChangetbx = true;
-        int prevPos;
+        int positionParkedAt;
         DoubleClickButton lastPressed;
         BindingList<string> platesList = new BindingList<string>();
         BindingList<string> MCs = new BindingList<string>();
@@ -43,7 +43,6 @@ namespace Gothenburg_parking_HEMMA
         public Form1()
         {
             InitializeComponent();
-            //InitTimer();
             comboBoxSearch.DataSource = platesList;
             comboboxMove.DataSource = platesList;
             comboBoxDepart.DataSource = platesList;
@@ -51,21 +50,22 @@ namespace Gothenburg_parking_HEMMA
             lbMC.DataSource = MCs;
         }
 
-
+        #region Buttonssetup
         // --------------------------------------------------------------------------------
         // --------------------------------- Button setup ---------------------------------
         // --------------------------------------------------------------------------------
+
         List<DoubleClickButton> buttons;
 
         private void Form1_Load(object sender, EventArgs e)
         {
             buttons = new List<DoubleClickButton> {
-            spot1, spot2, spot3, spot4, spot5,
-            spot6, spot7, spot8, spot9, spot10,
-            spot11, spot12, spot13, spot14, spot15,
-            spot16, spot17, spot18, spot19, spot20,
-            spot21, spot22, spot23, spot24, spot25,
-            spot26, spot27, spot28, spot29, spot30,
+                spot1, spot2, spot3, spot4, spot5,
+                spot6, spot7, spot8, spot9, spot10,
+                spot11, spot12, spot13, spot14, spot15,
+                spot16, spot17, spot18, spot19, spot20,
+                spot21, spot22, spot23, spot24, spot25,
+                spot26, spot27, spot28, spot29, spot30,
             };
 
             foreach(DoubleClickButton item in buttons)
@@ -80,23 +80,9 @@ namespace Gothenburg_parking_HEMMA
             displayContent(null);
         }
 
-        // --------------------------------------------------------------------------------
-        // --------------------------------- timer setup ----------------------------------
-        // --------------------------------------------------------------------------------
+        #endregion
 
-        //private Timer timer1 = new Timer();
-        //public void InitTimer()
-        //{
-        //    timer1.Interval = 1000;
-        //    timer1.Tick += new EventHandler(Timer1_Tick);
-        //    timer1.Start();
-        //}
-
-        //private void Timer1_Tick(object sender, EventArgs e)
-        //{
-        //    UPDATE();
-        //}
-
+        #region textbox initial
         // --------------------------------------------------------------------------------
         // --------------------------------- remove text ----------------------------------
         // --------------------------------------------------------------------------------
@@ -112,26 +98,18 @@ namespace Gothenburg_parking_HEMMA
             firstChangetbx = false;
         }
 
-        private void textBox1_MouseClick(object sender, MouseEventArgs e)
+        private void tbxREG_Enter(object sender, EventArgs e)
         {
-            if (textboxREG.Text == "ABC123" && firstChangetbx)
+            if (tbxREG.Text == "ABC123" && firstChangetbx)
             {
-                textboxREG.Text = "";
-                textboxREG.ForeColor = Color.Black;
+                tbxREG.Text = "";
+                tbxREG.ForeColor = Color.Black;
             }
         }
 
-        private static void fillREG(ref string REG)
-        {
-            //fill the string to len 10 with replacement
-            int underflow = 10 - REG.Length;
-            while (underflow > 0)
-            {
-                REG += '?';
-                underflow--;
-            }
-        }
+        #endregion
 
+        #region Updates
         // --------------------------------------------------------------------------------
         // --------------------------------- UPDATES --------------------------------------
         // --------------------------------------------------------------------------------
@@ -203,38 +181,37 @@ namespace Gothenburg_parking_HEMMA
 
 
         //check caller for type of instruction and get the reg and position from the callers info
-        private void updateInstructions(int? from, int? to, string REG)
+        private void updateInstructions(int? from, int? to, string reg)
         {
             string caller = new StackFrame(1, true).GetMethod().Name;
             to++;
             from++;
 
-            if (REG.Contains('?'))
+            if (reg.Contains('?'))
             {
-                REG = REG.Replace("?", "");
+                reg = reg.Replace("?", "");
             }
 
             if (caller == "moveVehicle")
             {
-                tbxInstructions.Text += string.Format("Please move {0} from {1} to spot {2}\r\n", REG, from, to);
+                tbxInstructions.Text += string.Format("Please move {0} from {1} to spot {2}\r\n", reg, from, to);
             }
             else if (caller == "Park")
             {
-                tbxInstructions.Text += string.Format("Please park {0} at spot {1}\r\n", REG, to);
+                tbxInstructions.Text += string.Format("Please park {0} at spot {1}\r\n", reg, to);
             }
             else if (caller == "depart")
             {
-                tbxInstructions.Text += string.Format("Please remove {0} from spot {1} \r\n", REG, from);
+                tbxInstructions.Text += string.Format("Please remove {0} from spot {1} \r\n", reg, from);
             }
             else if (caller == "optimize")
             {
-                tbxInstructions.Text += string.Format("Please move {0} from spot {1} to optimize parkinglot \r\n", REG, from);
+                tbxInstructions.Text += string.Format("Please move {0} from spot {1} to optimize parkinglot \r\n", reg, from);
             }
         }
 
         private void giveReciept(string index)
         {
-
             string[] indexparts = index.Split(':');
             string data = parkingData[int.Parse(indexparts[0])];
 
@@ -246,7 +223,7 @@ namespace Gothenburg_parking_HEMMA
                 DateTime parkedSince = Convert.ToDateTime(data.Substring(15, 19));
                 TimeSpan difference = DateTime.Now - parkedSince;
 
-                tbxRec.Text += string.Format("{0} has been checked out from the parkinglot. Parked since: {1}. Time spent parked: {2} \r\n", 
+                tbxReceipt.Text += string.Format("{0} has been checked out from the parkinglot. Parked since: {1}. Time spent parked: {2} \r\n", 
                     reg, parkedSince, difference);
             }
             else if (indexparts[1] == "2")
@@ -255,15 +232,15 @@ namespace Gothenburg_parking_HEMMA
                 DateTime parkedSince = Convert.ToDateTime(data.Substring(50, 19));
                 TimeSpan difference = DateTime.Now - parkedSince;
 
-                tbxRec.Text += string.Format("{0} has been checked out from the parkinglot. Parked since: {1}. Time spent parked: {2} \r\n", 
+                tbxReceipt.Text += string.Format("{0} has been checked out from the parkinglot. Parked since: {1}. Time spent parked: {2} \r\n", 
                     reg, parkedSince, difference);
             }
         }
 
 
-        private void displayContent(string REG)
+        private void displayContent(string reg)
         {
-            if (REG == null)
+            if (reg == null)
             {
                 string data = parkingData[int.Parse(Regex.Replace(lastPressed.Name, @"spot", "")) - 1];
 
@@ -290,11 +267,11 @@ namespace Gothenburg_parking_HEMMA
             }
             else
             {
-                string index = findIndexOfVehicle(REG);
+                string index = findIndexOfVehicle(reg);
                 string[] indexParts = index.Split(':');
                 string time = "0000-00-00 00:00:00";
 
-                REG = Regex.Replace(REG, @"\?", "");
+                reg = Regex.Replace(reg, @"\?", "");
 
                 if (indexParts[1] == "1")
                 {
@@ -306,7 +283,7 @@ namespace Gothenburg_parking_HEMMA
                 }
 
                 string message = string.Format(
-                    "{0} is located at spot {1} and has been parked since {2}", REG, int.Parse(indexParts[0]) + 1, time);
+                    "{0} is located at spot {1} and has been parked since {2}", reg, int.Parse(indexParts[0]) + 1, time);
 
                 MessageBox.Show(message, "Details of Vehicle");
             }
@@ -326,8 +303,9 @@ namespace Gothenburg_parking_HEMMA
             MCs.Clear();
             CARs.Clear();
         }
+        #endregion
 
-
+        #region Optimize
         // --------------------------------------------------------------------------------
         // --------------------------------- Optimisera -----------------------------------
         // --------------------------------------------------------------------------------
@@ -360,20 +338,22 @@ namespace Gothenburg_parking_HEMMA
             UPDATE();
 
         }
+        #endregion
 
+        #region Basic Checks
         // --------------------------------------------------------------------------------
         // --------------------------------- BASIC CHECKS ---------------------------------
         // --------------------------------------------------------------------------------
 
-        private bool validatePlate(string REG)
+        private bool validatePlate(string reg)
         {
-            if (REG.Count() == 0 || REG.Count() > 10)
+            if (reg.Count() == 0 || reg.Count() > 10)
             {
                 return false;
             }
 
-            char[] validChar = "-0123456789ABCDEFGHIJLMNOPQRSTUVWXYZÅÄÖÜËÑÆŒØß".ToCharArray();
-            foreach (char c in REG)
+            char[] validChar = "-0123456789ABCDEFGHIJLMNOPQRSTUVWXYZÅÄÖabcdefghijklmnopqrstuvwxyzåäöÜËÑÆŒØßüëñæœøß".ToCharArray();
+            foreach (char c in reg)
             {
                 if (!validChar.Contains(c))
                 {
@@ -412,13 +392,13 @@ namespace Gothenburg_parking_HEMMA
             throw new Exception("TYPE COULD NOT BE FOUND");
         }
 
-        private bool isAlreadyParked(string REG)
+        private bool isAlreadyParked(string reg)
         {
             foreach(string item in parkingData)
             {
                 if(item != null)
                 {
-                    if (getPlate(item, true) == REG || (item.Length > 36 && getPlate(item, false) == REG))
+                    if (getPlate(item, true) == reg || (item.Length > 36 && getPlate(item, false) == reg))
                     {
                         return true;
                     }
@@ -470,6 +450,20 @@ namespace Gothenburg_parking_HEMMA
             throw new Exception("ERROR_404:VEHICLE IS NOT IN ARRAY");
         }
 
+        private static void fillREG(ref string reg)
+        {
+            //fill the string to len 10 with replacement
+            int underflow = 10 - reg.Length;
+            while (underflow > 0)
+            {
+                reg += '?';
+                underflow--;
+            }
+        }
+
+        #endregion
+
+        #region The meat of the operation
         private void placeVehicle(int position, string licens, bool isCar)
         {
             string type = isCar ? "CAR" : "MC?";
@@ -477,7 +471,7 @@ namespace Gothenburg_parking_HEMMA
             parkingData[position] += string.Format("{0}:{1}@{2}&", licens, type, DateTime.Now);
         }
 
-        private void searchVechile(string plate)
+        private void searchVehicle(string plate)
         {
             UPDATE();
             string indexPos = findIndexOfVehicle(plate);
@@ -505,15 +499,15 @@ namespace Gothenburg_parking_HEMMA
                     if (spotStorage == 1)
                     {
                         placeVehicle(i, licens, isCar);
-                        prevPos = i + 1;
-                        updateInstructions(null , i + 1, licens);
+                        positionParkedAt = i + 1;
+                        updateInstructions(null , positionParkedAt, licens);
                         return 1;
                     }
                     else if (spotStorage == 2)
                     {
                         placeVehicle(i, licens, isCar);
-                        prevPos = i + 1;
-                        updateInstructions(null, i + 1, licens);
+                        positionParkedAt = i + 1;
+                        updateInstructions(null, positionParkedAt, licens);
                         return 1;
                     }
                 }
@@ -521,29 +515,29 @@ namespace Gothenburg_parking_HEMMA
             return 0;
         }
 
-        private void moveVehicle(string REG, int moveTo)
+        private void moveVehicle(string reg, int moveTo)
         {
-            if (REG != "")
+            if (reg != "")
             {
                 //fill the reg to 10 char with "?" as replacements
-                fillREG(ref REG);
+                fillREG(ref reg);
 
                 //safty check
-                if(isAlreadyParked(REG) == false)
+                if(isAlreadyParked(reg) == false)
                 {
                     lblMove.Text = "Vehicle not in parkinglot";
                 }
 
-                //find position of REG 
-                string index = findIndexOfVehicle(REG);
+                //find position of reg 
+                string index = findIndexOfVehicle(reg);
                 string[] indexParts = index.Split(':');
                 int position = int.Parse(indexParts[0]);
                 int partIndex = int.Parse(indexParts[1]);
 
-                //get type of REG that is getting parked
+                //get type of reg that is getting parked
                 bool isCar = getType(parkingData[position], true) == "CAR";
 
-                //get the plate of the REG
+                //get the plate of the reg
                 MatchCollection plates = extractPlate.Matches(parkingData[position]);
 
                 if (parkingData[moveTo] == null)
@@ -650,16 +644,16 @@ namespace Gothenburg_parking_HEMMA
             }
         }
 
-        private void depart(string REG)
+        private void depart(string reg)
         {
 
-            if(isAlreadyParked(REG) == false)
+            if(isAlreadyParked(reg) == false)
             {
                 throw new Exception("Vehicle is not parked and cannot be checked out");
             }
 
-            //find position of REG 
-            string index = findIndexOfVehicle(REG);
+            //find position of reg 
+            string index = findIndexOfVehicle(reg);
             string[] indexParts = index.Split(':');
             int position = int.Parse(indexParts[0]);
             int partIndex = int.Parse(indexParts[1]);
@@ -692,20 +686,22 @@ namespace Gothenburg_parking_HEMMA
                 throw new Exception("Vehicle could not be depared");
             }
         }
+        #endregion
 
+        #region Events
         private void btnMove_Click(object sender, EventArgs e)
         {
             if (lastPressed != null && comboboxMove.Text != "")
             {
-                string REG = comboboxMove.Text;
+                string reg = comboboxMove.Text;
                 int moveTo = int.Parse(Regex.Replace(lastPressed.Name, @"spot", "")) - 1;
-                moveVehicle(REG, moveTo);
+                moveVehicle(reg, moveTo);
             }
         }
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
-            string regnr = textboxREG.Text;
+            string regnr = tbxREG.Text;
             bool isCar = radioCAR.Checked;
 
             regnr = regnr.Trim();
@@ -729,7 +725,7 @@ namespace Gothenburg_parking_HEMMA
                         break;
                                                             
                     case 1:
-                        lblVehicleParked.Text = Regex.Replace(regnr, @"\?", "") + " Has been parked at " + prevPos;
+                        lblVehicleParked.Text = Regex.Replace(regnr, @"\?", "") + " Has been parked at " + positionParkedAt;
                         break;
 
                     case 2:
@@ -738,18 +734,18 @@ namespace Gothenburg_parking_HEMMA
                 }
             }
             UPDATE();
-            textboxREG.Text = string.Empty;
+            tbxREG.Text = string.Empty;
         }
 
         private void btnDepart_Click(object sender, EventArgs e)
         {
             if (comboBoxDepart.Text != "")
             {
-                string REG = comboBoxDepart.Text;
-                fillREG(ref REG);
-                if (isAlreadyParked(REG))
+                string reg = comboBoxDepart.Text;
+                fillREG(ref reg);
+                if (isAlreadyParked(reg))
                 {
-                    depart(REG);
+                    depart(reg);
                 }
             }
         }
@@ -765,7 +761,7 @@ namespace Gothenburg_parking_HEMMA
             {
                 string reg = comboBoxSearch.Text;
                 fillREG(ref reg);
-                searchVechile(reg);
+                searchVehicle(reg);
             }
         }
 
@@ -787,5 +783,8 @@ namespace Gothenburg_parking_HEMMA
         {
             optimize();
         }
+
+        #endregion
+
     }
 }

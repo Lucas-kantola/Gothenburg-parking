@@ -60,14 +60,9 @@
             this.radioCAR = new System.Windows.Forms.RadioButton();
             this.radioMC = new System.Windows.Forms.RadioButton();
             this.lblRegnrEx = new System.Windows.Forms.Label();
-            this.labelPark = new System.Windows.Forms.Label();
-            this.textboxREG = new System.Windows.Forms.TextBox();
+            this.lblPark = new System.Windows.Forms.Label();
+            this.tbxREG = new System.Windows.Forms.TextBox();
             this.parkmap = new System.Windows.Forms.GroupBox();
-            this.tabWorker = new System.Windows.Forms.TabPage();
-            this.groupBoxReciept = new System.Windows.Forms.GroupBox();
-            this.tbxRec = new System.Windows.Forms.TextBox();
-            this.groupInstruct = new System.Windows.Forms.GroupBox();
-            this.tbxInstructions = new System.Windows.Forms.TextBox();
             this.spot30 = new Gothenburg_parking_HEMMA.DoubleClickButton();
             this.spot29 = new Gothenburg_parking_HEMMA.DoubleClickButton();
             this.spot28 = new Gothenburg_parking_HEMMA.DoubleClickButton();
@@ -98,7 +93,12 @@
             this.spot3 = new Gothenburg_parking_HEMMA.DoubleClickButton();
             this.spot2 = new Gothenburg_parking_HEMMA.DoubleClickButton();
             this.spot1 = new Gothenburg_parking_HEMMA.DoubleClickButton();
-            this.button1 = new System.Windows.Forms.Button();
+            this.tabWorker = new System.Windows.Forms.TabPage();
+            this.groupBoxReceipt = new System.Windows.Forms.GroupBox();
+            this.tbxReceipt = new System.Windows.Forms.TextBox();
+            this.groupInstruct = new System.Windows.Forms.GroupBox();
+            this.btnOptimize = new System.Windows.Forms.Button();
+            this.tbxInstructions = new System.Windows.Forms.TextBox();
             this.tabController.SuspendLayout();
             this.tabUI.SuspendLayout();
             this.groupPark.SuspendLayout();
@@ -112,7 +112,7 @@
             this.groupBoxParker.SuspendLayout();
             this.parkmap.SuspendLayout();
             this.tabWorker.SuspendLayout();
-            this.groupBoxReciept.SuspendLayout();
+            this.groupBoxReceipt.SuspendLayout();
             this.groupInstruct.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -384,8 +384,8 @@
             this.groupBoxParker.Controls.Add(this.radioCAR);
             this.groupBoxParker.Controls.Add(this.radioMC);
             this.groupBoxParker.Controls.Add(this.lblRegnrEx);
-            this.groupBoxParker.Controls.Add(this.labelPark);
-            this.groupBoxParker.Controls.Add(this.textboxREG);
+            this.groupBoxParker.Controls.Add(this.lblPark);
+            this.groupBoxParker.Controls.Add(this.tbxREG);
             this.groupBoxParker.Location = new System.Drawing.Point(6, 19);
             this.groupBoxParker.Name = "groupBoxParker";
             this.groupBoxParker.Size = new System.Drawing.Size(181, 204);
@@ -443,26 +443,26 @@
             this.lblRegnrEx.TabIndex = 2;
             this.lblRegnrEx.Text = "Registration number\r\nExample: \"ABC123\"";
             // 
-            // labelPark
+            // lblPark
             // 
-            this.labelPark.AutoSize = true;
-            this.labelPark.Location = new System.Drawing.Point(15, 25);
-            this.labelPark.Name = "labelPark";
-            this.labelPark.Size = new System.Drawing.Size(71, 13);
-            this.labelPark.TabIndex = 1;
-            this.labelPark.Text = "Fill in the form";
+            this.lblPark.AutoSize = true;
+            this.lblPark.Location = new System.Drawing.Point(15, 25);
+            this.lblPark.Name = "lblPark";
+            this.lblPark.Size = new System.Drawing.Size(71, 13);
+            this.lblPark.TabIndex = 1;
+            this.lblPark.Text = "Fill in the form";
             // 
-            // textboxREG
+            // tbxREG
             // 
-            this.textboxREG.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.textboxREG.Location = new System.Drawing.Point(18, 44);
-            this.textboxREG.MaxLength = 10;
-            this.textboxREG.Name = "textboxREG";
-            this.textboxREG.Size = new System.Drawing.Size(118, 20);
-            this.textboxREG.TabIndex = 0;
-            this.textboxREG.Text = "ABC123";
-            this.textboxREG.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox1_MouseClick);
-            this.textboxREG.TextChanged += new System.EventHandler(this.tbxtextChanged);
+            this.tbxREG.ForeColor = System.Drawing.SystemColors.WindowFrame;
+            this.tbxREG.Location = new System.Drawing.Point(18, 44);
+            this.tbxREG.MaxLength = 10;
+            this.tbxREG.Name = "tbxREG";
+            this.tbxREG.Size = new System.Drawing.Size(118, 20);
+            this.tbxREG.TabIndex = 0;
+            this.tbxREG.Text = "ABC123";
+            this.tbxREG.TextChanged += new System.EventHandler(this.tbxtextChanged);
+            this.tbxREG.Enter += new System.EventHandler(this.tbxREG_Enter);
             // 
             // parkmap
             // 
@@ -504,60 +504,6 @@
             this.parkmap.Size = new System.Drawing.Size(962, 286);
             this.parkmap.TabIndex = 0;
             this.parkmap.TabStop = false;
-            // 
-            // tabWorker
-            // 
-            this.tabWorker.Controls.Add(this.groupBoxReciept);
-            this.tabWorker.Controls.Add(this.groupInstruct);
-            this.tabWorker.Location = new System.Drawing.Point(4, 22);
-            this.tabWorker.Name = "tabWorker";
-            this.tabWorker.Padding = new System.Windows.Forms.Padding(3);
-            this.tabWorker.Size = new System.Drawing.Size(975, 533);
-            this.tabWorker.TabIndex = 1;
-            this.tabWorker.Text = "Worker";
-            this.tabWorker.UseVisualStyleBackColor = true;
-            this.tabWorker.Click += new System.EventHandler(this.tabWorker_Click);
-            // 
-            // groupBoxReciept
-            // 
-            this.groupBoxReciept.Controls.Add(this.tbxRec);
-            this.groupBoxReciept.Location = new System.Drawing.Point(3, 258);
-            this.groupBoxReciept.Name = "groupBoxReciept";
-            this.groupBoxReciept.Size = new System.Drawing.Size(969, 269);
-            this.groupBoxReciept.TabIndex = 1;
-            this.groupBoxReciept.TabStop = false;
-            this.groupBoxReciept.Text = "Reciept";
-            // 
-            // tbxRec
-            // 
-            this.tbxRec.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.tbxRec.Location = new System.Drawing.Point(6, 19);
-            this.tbxRec.Multiline = true;
-            this.tbxRec.Name = "tbxRec";
-            this.tbxRec.ReadOnly = true;
-            this.tbxRec.Size = new System.Drawing.Size(957, 244);
-            this.tbxRec.TabIndex = 0;
-            // 
-            // groupInstruct
-            // 
-            this.groupInstruct.Controls.Add(this.button1);
-            this.groupInstruct.Controls.Add(this.tbxInstructions);
-            this.groupInstruct.Location = new System.Drawing.Point(3, 3);
-            this.groupInstruct.Name = "groupInstruct";
-            this.groupInstruct.Size = new System.Drawing.Size(969, 249);
-            this.groupInstruct.TabIndex = 0;
-            this.groupInstruct.TabStop = false;
-            this.groupInstruct.Text = "Instructions";
-            // 
-            // tbxInstructions
-            // 
-            this.tbxInstructions.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.tbxInstructions.Location = new System.Drawing.Point(6, 19);
-            this.tbxInstructions.Multiline = true;
-            this.tbxInstructions.Name = "tbxInstructions";
-            this.tbxInstructions.ReadOnly = true;
-            this.tbxInstructions.Size = new System.Drawing.Size(782, 224);
-            this.tbxInstructions.TabIndex = 0;
             // 
             // spot30
             // 
@@ -829,15 +775,69 @@
             this.spot1.UseVisualStyleBackColor = true;
             this.spot1.Click += new System.EventHandler(this.btnPressed);
             // 
-            // button1
+            // tabWorker
             // 
-            this.button1.Location = new System.Drawing.Point(794, 19);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(169, 224);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "OPTIMIZE";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.tabWorker.Controls.Add(this.groupBoxReceipt);
+            this.tabWorker.Controls.Add(this.groupInstruct);
+            this.tabWorker.Location = new System.Drawing.Point(4, 22);
+            this.tabWorker.Name = "tabWorker";
+            this.tabWorker.Padding = new System.Windows.Forms.Padding(3);
+            this.tabWorker.Size = new System.Drawing.Size(975, 533);
+            this.tabWorker.TabIndex = 1;
+            this.tabWorker.Text = "Worker";
+            this.tabWorker.UseVisualStyleBackColor = true;
+            this.tabWorker.Click += new System.EventHandler(this.tabWorker_Click);
+            // 
+            // groupBoxReceipt
+            // 
+            this.groupBoxReceipt.Controls.Add(this.tbxReceipt);
+            this.groupBoxReceipt.Location = new System.Drawing.Point(3, 258);
+            this.groupBoxReceipt.Name = "groupBoxReceipt";
+            this.groupBoxReceipt.Size = new System.Drawing.Size(969, 269);
+            this.groupBoxReceipt.TabIndex = 1;
+            this.groupBoxReceipt.TabStop = false;
+            this.groupBoxReceipt.Text = "Receipt";
+            // 
+            // tbxReceipt
+            // 
+            this.tbxReceipt.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.tbxReceipt.Location = new System.Drawing.Point(6, 19);
+            this.tbxReceipt.Multiline = true;
+            this.tbxReceipt.Name = "tbxReceipt";
+            this.tbxReceipt.ReadOnly = true;
+            this.tbxReceipt.Size = new System.Drawing.Size(957, 244);
+            this.tbxReceipt.TabIndex = 0;
+            // 
+            // groupInstruct
+            // 
+            this.groupInstruct.Controls.Add(this.btnOptimize);
+            this.groupInstruct.Controls.Add(this.tbxInstructions);
+            this.groupInstruct.Location = new System.Drawing.Point(3, 3);
+            this.groupInstruct.Name = "groupInstruct";
+            this.groupInstruct.Size = new System.Drawing.Size(969, 249);
+            this.groupInstruct.TabIndex = 0;
+            this.groupInstruct.TabStop = false;
+            this.groupInstruct.Text = "Instructions";
+            // 
+            // btnOptimize
+            // 
+            this.btnOptimize.Location = new System.Drawing.Point(794, 19);
+            this.btnOptimize.Name = "btnOptimize";
+            this.btnOptimize.Size = new System.Drawing.Size(169, 224);
+            this.btnOptimize.TabIndex = 1;
+            this.btnOptimize.Text = "OPTIMIZE";
+            this.btnOptimize.UseVisualStyleBackColor = true;
+            this.btnOptimize.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // tbxInstructions
+            // 
+            this.tbxInstructions.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.tbxInstructions.Location = new System.Drawing.Point(6, 19);
+            this.tbxInstructions.Multiline = true;
+            this.tbxInstructions.Name = "tbxInstructions";
+            this.tbxInstructions.ReadOnly = true;
+            this.tbxInstructions.Size = new System.Drawing.Size(782, 224);
+            this.tbxInstructions.TabIndex = 0;
             // 
             // Form1
             // 
@@ -866,8 +866,8 @@
             this.groupBoxParker.PerformLayout();
             this.parkmap.ResumeLayout(false);
             this.tabWorker.ResumeLayout(false);
-            this.groupBoxReciept.ResumeLayout(false);
-            this.groupBoxReciept.PerformLayout();
+            this.groupBoxReceipt.ResumeLayout(false);
+            this.groupBoxReceipt.PerformLayout();
             this.groupInstruct.ResumeLayout(false);
             this.groupInstruct.PerformLayout();
             this.ResumeLayout(false);
@@ -882,8 +882,8 @@
         private System.Windows.Forms.GroupBox parkmap;
         private System.Windows.Forms.GroupBox groupPark;
         private System.Windows.Forms.GroupBox groupBoxParker;
-        private System.Windows.Forms.Label labelPark;
-        private System.Windows.Forms.TextBox textboxREG;
+        private System.Windows.Forms.Label lblPark;
+        private System.Windows.Forms.TextBox tbxREG;
         private System.Windows.Forms.Label lblRegnrEx;
         private System.Windows.Forms.RadioButton radioCAR;
         private System.Windows.Forms.RadioButton radioMC;
@@ -943,9 +943,9 @@
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.ComboBox comboBoxSearch;
         private System.Windows.Forms.Label lblSearch;
-        private System.Windows.Forms.GroupBox groupBoxReciept;
-        private System.Windows.Forms.TextBox tbxRec;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.GroupBox groupBoxReceipt;
+        private System.Windows.Forms.TextBox tbxReceipt;
+        private System.Windows.Forms.Button btnOptimize;
     }
 }
 
